@@ -1,0 +1,40 @@
+<Produto>
+    <id>
+        <int>100</int>
+        <int>101</int>
+        <int>102</int>
+        <int>103</int>
+        <int>104</int>
+        <int>105</int>
+        <int>106</int>
+        <int>107</int>
+        <int>108</int>
+        <int>109</int> 
+    </id>
+        
+    <nome>
+        <string>Alface</string>
+        <string>Couve</string>
+        <string>Espinafre</string>
+        <string>Feijao</string>
+        <string>Pepino</string>
+        <string>Pimentao</string>
+        <string>Quiabo</string>
+        <string>Batata</string>
+        <string>Rabanete</string>
+        <string>Beterraba</string>
+    </nome>
+        
+    <preco>
+        <double>2.50</double>
+        <double>1.50</double>
+        <double>2.50</double>
+        <double>1.50</double>
+        <double>2.50</double>
+        <double>1.50</double>
+        <double>2.50</double>
+        <double>1.50</double>
+        <double>2.50</double>
+        <double>1.50</double>
+    </preco>
+</Produto>
