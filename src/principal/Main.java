@@ -5,8 +5,10 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -16,7 +18,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import pojo.Carrinho;
 import pojo.Produto;
+import pojo.ProdutosComprados;
 import util.Facade;
+import util.FormaDePagamento;
+import util.FormaFactory;
 
 public class Main implements Observer {
 
@@ -25,6 +30,10 @@ public class Main implements Observer {
     public static List<String> produtoCarrinho = new ArrayList();
     public static Facade facade = new Facade();
     public static Scanner scanner = new Scanner(System.in);
+    public static FormaFactory tipoForma = new FormaFactory();
+    public static ProdutosComprados prodComp = new ProdutosComprados();
+    public static List<Integer> id = new ArrayList();
+    public static String forma;
 
     public static void main(String[] args) {
         Main main = new Main();
@@ -32,16 +41,17 @@ public class Main implements Observer {
 
         XStream xs = new XStream(new DomDriver());
         xs.alias("Produto", Produto.class);
+        xs.alias("ProdutosComprados", ProdutosComprados.class);
 
         converterXml();
 
         int opcaoMenu;
         int opcaoMenu2;
         int resposta;
+        int resposta2;
         int idProduto;
         int posicaoProduto = 0;
         double valorCarrinho = 0;
-        double valorPago;
 
         do {
             System.out.println("MENU:");
@@ -59,7 +69,6 @@ public class Main implements Observer {
                         System.out.println("0 - SAIR");
                         opcaoMenu2 = scanner.nextInt();
                         limparConsole();
-
                         switch (opcaoMenu2) {
                             case 1:
                                 do {
@@ -73,6 +82,9 @@ public class Main implements Observer {
                                             posicaoProduto = i;
                                         }
                                     }
+
+                                    id.add(idProduto);
+
                                     valorCarrinho = valorCarrinho + produto.getPreco()[posicaoProduto];
                                     addProdutoCarrinho(posicaoProduto, produto);
                                     carrinho.setProduto(produtoCarrinho);
@@ -96,18 +108,62 @@ public class Main implements Observer {
 
                     facade.mostrarTotal(carrinho.getValorTotal());
 
-                    System.out.println("DIGITE O VALOR DADO");
-                    valorPago = scanner.nextDouble();
-                    facade.calcularTroco(valorPago);
+                    System.out.println("ESCOLHA A FORMA DE PAGAMENTO:");
+                    System.out.println("1 - BOLETO");
+                    System.out.println("2 - DINHEIRO");
+                    System.out.println("3 - CARTÃO DE CRÉDITO");
+                    resposta2 = scanner.nextInt();
+
+                    switch (resposta2) {
+                        case 1:
+                            FormaDePagamento formaPag = tipoForma.gerarForma("BOLETO");
+                            formaPag.forma();
+                            forma = "BOLETO";
+                            break;
+                        case 2:
+                            formaPag = tipoForma.gerarForma("DINHEIRO");
+                            formaPag.forma();
+                            forma = "DINHEIRO";
+                            break;
+                        case 3:
+                            formaPag = tipoForma.gerarForma("CARTAO");
+                            formaPag.forma();
+                            forma = "CARTAO";
+                            break;
+                    }
                     break;
             }
-                    
+
         } while (opcaoMenu != 0);
+        
+        prodComp.setId(id);
+        prodComp.setFormaPag(forma);
+        prodComp.setPreco(carrinho.getValorTotal());
+
+        String xml = xs.toXML(prodComp);
+        gerarXml(xml);
+    }
+
+    public static void gerarXml(String xml) {
+        PrintWriter print = null;
+        try {
+            File file = new File("C:\\Users\\bruno\\Desktop\\Observer\\Observer\\src\\xml\\prodComp.xml");
+            print = new PrintWriter(file);
+
+            print.write(xml);
+            print.flush();
+            print.close();
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            print.close();
+        }
     }
 
     public static void converterXml() {
         try {
-            FileReader fr = new FileReader("C:\\Users\\bruno\\Documents\\NetBeansProjects\\Observer\\src\\xml\\produto.xml");
+            FileReader fr = new FileReader("C:\\Users\\bruno\\Desktop\\Observer\\Observer\\src\\xml\\produto.xml");
             XStream xs = new XStream(new DomDriver());
             xs.alias("Produto", Produto.class);
 

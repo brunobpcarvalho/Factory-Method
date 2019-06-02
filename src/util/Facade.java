@@ -7,7 +7,7 @@ public class Facade {
         this.calcular.mostrarTotal(valor);
     }
     
-    public void calcularTroco(double valorPago){
-        this.calcular.calcularTroco(valorPago);
+    public void realizarPagamento(double valorPago, int formaPagamento){
+        this.calcular.realizarPagamento(valorPago, formaPagamento);
     }
 }

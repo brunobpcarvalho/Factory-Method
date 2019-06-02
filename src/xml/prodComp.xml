@@ -1,0 +1,9 @@
+<ProdutosComprados>
+  <id>
+    <int>100</int>
+    <int>101</int>
+    <int>102</int>
+  </id>
+  <formaPag>DINHEIRO</formaPag>
+  <preco>6.5</preco>
+</ProdutosComprados>
